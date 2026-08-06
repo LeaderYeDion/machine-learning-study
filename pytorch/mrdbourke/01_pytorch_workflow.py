@@ -1,7 +1,7 @@
 import torch
 import matplotlib.pyplot as plt
 from torch import nn
-
+from pathlib import Path
 
 
 class LinearRegression(nn.Module):
@@ -31,10 +31,10 @@ X_train, y_train = X[:train_split], y[:train_split]
 X_test, y_test = X[train_split:], y[train_split:]
 
 
-def do_model_training():
+def do_model_training(model_1:nn.Module):
     epochs = 1000
     torch.manual_seed(10)
-    model_1 = LinearRegression()
+    # model_1 = LinearRegression()
     print(f"""actual weights: {weights}, actual bias: {bias}.""")
     print(f"""model 1: {model_1.state_dict()}""")
     # create loss function and optimizer for our linear regression
@@ -111,7 +111,32 @@ def plot_predictions(train_data, train_labels, test_data, test_labels, predictio
     plt.legend()
     plt.show()
 
+MODEL_PATH = Path("./model")
+MODEL_PATH.mkdir(parents=True, exist_ok=True)
+MODEL_NAME = "01_pytorch_workflow.pt"
+MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
+def save_model(model_to_save:nn.Module):
+    """
+    Saves model to disk
+    """
+    torch.save(model_to_save.state_dict(), MODEL_SAVE_PATH)
+    print(MODEL_SAVE_PATH)
+
+def load_model(path_to_load: str) -> nn.Module:
+    """
+    Loads model from disk
+    """
+    return torch.load(path_to_load)
 
 if __name__ == "__main__":
-    do_model_training()
+    # 1. training model and draw a picture to visualize
+    # model_1 = LinearRegression()
+    # do_model_training(model_1)
+
+    # 2. saving the model as binary to disk for future loading
+    # save_model(model_1)
+
+    # 3. loading existed model state dict from disk to use
+    loaded_model = load_model(str(MODEL_SAVE_PATH))
+    print(loaded_model)
 
