@@ -8,11 +8,15 @@ class LinearRegression(nn.Module):
     def __init__(self):
         super().__init__()
         # model training starts with a group of random data and updates
-        self.weights = nn.Parameter(torch.randn(1, requires_grad=True, dtype=torch.float32))
-        self.bias = nn.Parameter(torch.randn(1, requires_grad=True, dtype=torch.float32))
+        # self.weights = nn.Parameter(torch.randn(1, requires_grad=True, dtype=torch.float32))
+        # self.bias = nn.Parameter(torch.randn(1, requires_grad=True, dtype=torch.float32))
+
+        # you could also create directly through nn.Linear
+        self.linear_layer = nn.Linear(in_features=1, out_features=1, bias=True)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return x * self.weights + self.bias
+        # return x * self.weights + self.bias
+        return self.linear_layer(x)
 
 start = 0
 end = 1
@@ -133,7 +137,7 @@ def load_model(path_to_load: str, weights_only=True) -> nn.Module | dict:
 if __name__ == "__main__":
     # 1. training model and draw a picture to visualize
     model_1 = LinearRegression()
-    do_model_training(model_1, False)
+    do_model_training(model_1, True)
 
     persis_weights_only = True
 
