@@ -119,24 +119,24 @@ def save_model(model_to_save:nn.Module):
     """
     Saves model to disk
     """
-    torch.save(model_to_save.state_dict(), MODEL_SAVE_PATH)
+    torch.save(model_to_save, MODEL_SAVE_PATH)
     print(MODEL_SAVE_PATH)
 
-def load_model(path_to_load: str) -> nn.Module:
+def load_model(path_to_load: str, weights_only=True) -> nn.Module:
     """
     Loads model from disk
     """
-    return torch.load(path_to_load)
+    return torch.load(path_to_load, weights_only=weights_only)
 
 if __name__ == "__main__":
     # 1. training model and draw a picture to visualize
-    # model_1 = LinearRegression()
-    # do_model_training(model_1)
+    model_1 = LinearRegression()
+    do_model_training(model_1)
 
     # 2. saving the model as binary to disk for future loading
-    # save_model(model_1)
+    save_model(model_1)
 
     # 3. loading existed model state dict from disk to use
-    loaded_model = load_model(str(MODEL_SAVE_PATH))
-    print(loaded_model)
+    loaded_model = load_model(str(MODEL_SAVE_PATH), weights_only=False)
+    print(loaded_model.state_dict())
 
