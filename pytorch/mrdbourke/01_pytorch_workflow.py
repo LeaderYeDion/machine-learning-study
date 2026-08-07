@@ -31,7 +31,7 @@ X_train, y_train = X[:train_split], y[:train_split]
 X_test, y_test = X[train_split:], y[train_split:]
 
 
-def do_model_training(model_1:nn.Module):
+def do_model_training(model_1:nn.Module, draw_plot=True):
     epochs = 1000
     torch.manual_seed(10)
     # model_1 = LinearRegression()
@@ -71,7 +71,9 @@ def do_model_training(model_1:nn.Module):
         y_pred = model_1(X_test)
         loss = loss_fn(y_pred, y_test)
         print(f"""test loss: {loss}""")
-        plot_predictions(X_train, y_train, X_test, y_test, predictions=y_pred)
+
+        if draw_plot:
+            plot_predictions(X_train, y_train, X_test, y_test, predictions=y_pred)
 
 
 def do_liner_regression():
@@ -122,7 +124,7 @@ def save_model(model_to_save:nn.Module, weights_only=True):
     torch.save(model_to_save.state_dict() if weights_only else model_to_save, MODEL_SAVE_PATH)
     print(MODEL_SAVE_PATH)
 
-def load_model(path_to_load: str, weights_only=True) -> nn.Module:
+def load_model(path_to_load: str, weights_only=True) -> nn.Module | dict:
     """
     Loads model from disk
     """
@@ -131,16 +133,22 @@ def load_model(path_to_load: str, weights_only=True) -> nn.Module:
 if __name__ == "__main__":
     # 1. training model and draw a picture to visualize
     model_1 = LinearRegression()
-    do_model_training(model_1)
+    do_model_training(model_1, False)
 
-    persis_weights_only = False
+    persis_weights_only = True
 
     # 2. saving the model as binary to disk for future loading
     save_model(model_1, persis_weights_only)
 
     # 3. loading existed model state dict from disk to use
-    loaded_model = load_model(str(MODEL_SAVE_PATH), persis_weights_only)
+    loaded = load_model(str(MODEL_SAVE_PATH), persis_weights_only)
+
+    if persis_weights_only:
+        loaded_model = LinearRegression()
+        loaded_model.load_state_dict(loaded)
+    else:
+        loaded_model = loaded
+
     print(loaded_model)
-    if not persis_weights_only:
-        print(loaded_model.state_dict())
+    print(loaded_model.state_dict())
 
