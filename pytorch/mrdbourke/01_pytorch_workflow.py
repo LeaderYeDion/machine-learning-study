@@ -115,11 +115,11 @@ MODEL_PATH = Path("./model")
 MODEL_PATH.mkdir(parents=True, exist_ok=True)
 MODEL_NAME = "01_pytorch_workflow.pt"
 MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
-def save_model(model_to_save:nn.Module):
+def save_model(model_to_save:nn.Module, weights_only=True):
     """
     Saves model to disk
     """
-    torch.save(model_to_save, MODEL_SAVE_PATH)
+    torch.save(model_to_save.state_dict() if weights_only else model_to_save, MODEL_SAVE_PATH)
     print(MODEL_SAVE_PATH)
 
 def load_model(path_to_load: str, weights_only=True) -> nn.Module:
@@ -133,10 +133,14 @@ if __name__ == "__main__":
     model_1 = LinearRegression()
     do_model_training(model_1)
 
+    persis_weights_only = False
+
     # 2. saving the model as binary to disk for future loading
-    save_model(model_1)
+    save_model(model_1, persis_weights_only)
 
     # 3. loading existed model state dict from disk to use
-    loaded_model = load_model(str(MODEL_SAVE_PATH), weights_only=False)
-    print(loaded_model.state_dict())
+    loaded_model = load_model(str(MODEL_SAVE_PATH), persis_weights_only)
+    print(loaded_model)
+    if not persis_weights_only:
+        print(loaded_model.state_dict())
 
