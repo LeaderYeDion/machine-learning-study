@@ -63,7 +63,7 @@ def do_model_training(model_1:nn.Module, draw_plot=True):
         loss.backward()
 
         # 6. step the optimizer
-        optimizer.step()
+        optimizer.step() # since the optimizer has model_1's parameter references, so it can update those params
 
     print(f"""new model_1: {model_1.state_dict()}""")
 
