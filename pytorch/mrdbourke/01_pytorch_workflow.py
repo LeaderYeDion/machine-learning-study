@@ -152,3 +152,5 @@ if __name__ == "__main__":
     print(loaded_model)
     print(loaded_model.state_dict())
 
+    print(f"""result from loaded: {loaded_model(X_test)}""")
+    print(f"""expected: {y_test}""")
